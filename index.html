@@ -4,78 +4,93 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EQUILIBJUS Prazos</title>
+
+  <!-- ── Referencia: cdn.tailwindcss.com (identico ao arquivo base) ── -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ── Referencia: Inter (identico ao arquivo base) ── -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- ── Referencia: body font-family extraida do <style> do arquivo base ── -->
   <style>
     body { font-family: 'Inter', sans-serif; }
     .mono { font-family: 'Fira Code', monospace; }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #f8fafc; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-    .sidebar-enter { transform: translateX(0) !important; }
+    /* Sidebar transition — mesmo padrao do step fadeIn do arquivo base */
+    #sidebar { transition: transform 0.3s ease; }
+    #main-wrap { transition: margin-left 0.3s ease; }
   </style>
 </head>
+
+<!-- ── Referencia: bg-gray-50 text-gray-800 identico ao <body> do arquivo base ── -->
 <body class="bg-gray-50 text-gray-800 min-h-screen">
 
-  <!-- ── Sidebar overlay (mobile) ────────────────────── -->
-  <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-40 z-20 hidden" onclick="closeSidebar()"></div>
+  <!-- Overlay mobile sidebar -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden" onclick="closeSidebar()"></div>
 
-  <!-- ── Sidebar ──────────────────────────────────────── -->
+  <!-- ══════════════════════════════════════════════
+       SIDEBAR — cores e tipografia do arquivo base
+  ══════════════════════════════════════════════ -->
   <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-30 flex flex-col"
-         style="transform: translateX(-100%); transition: transform 0.3s ease;">
-    <!-- Brand -->
-    <div class="px-5 py-5 border-b border-gray-100">
-      <div class="text-blue-600 font-bold text-lg tracking-widest">EQUILIBJUS</div>
-      <div class="text-gray-400 text-xs mt-0.5 mono">prazos-processuais</div>
+         style="transform: translateX(-100%);">
+
+    <!-- Brand — referencia: text-blue-600 font-bold do arquivo base -->
+    <div class="px-6 py-5 border-b border-gray-100">
+      <p class="text-blue-600 font-bold text-lg tracking-widest">EQUILIBJUS</p>
+      <p class="text-gray-500 text-xs mt-0.5 mono">prazos-processuais</p>
     </div>
 
     <!-- Nav -->
-    <nav class="flex-1 p-3 space-y-0.5 overflow-y-auto">
-      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-blue-50 text-blue-700 font-semibold text-sm">
-        <svg class="w-4.5 h-4.5 flex-shrink-0 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+    <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+      <!-- Item ativo — referencia: bg-blue-50 border-blue-500 do hover dos botoes do arquivo base -->
+      <a href="#" class="flex items-center gap-3 px-4 py-2.5 border border-blue-200 rounded-lg bg-blue-50 text-blue-700 font-medium text-sm transition">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
           <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
         </svg>
         Prazos Processuais
       </a>
     </nav>
 
-    <!-- Footer sidebar -->
-    <div class="p-4 border-t border-gray-100">
-      <div class="text-xs text-gray-400 mono">v1.0.0</div>
+    <div class="px-6 py-4 border-t border-gray-100">
+      <p class="text-xs text-gray-400 mono">v1.0.0</p>
     </div>
   </aside>
 
-  <!-- ── Main wrapper ──────────────────────────────────── -->
-  <div id="main-wrap" class="min-h-screen flex flex-col" style="margin-left: 0; transition: margin-left 0.3s ease;">
+  <!-- ══════════════════════════════════════════════
+       MAIN
+  ══════════════════════════════════════════════ -->
+  <div id="main-wrap" style="margin-left: 0;" class="min-h-screen flex flex-col">
 
-    <!-- ── Topbar ──────────────────────────────────────── -->
-    <header class="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
-      <!-- Hamburger -->
-      <button id="hamburger" onclick="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition flex-shrink-0">
+    <!-- ── TOPBAR ── referencia: bg-white border-b dos containers do arquivo base -->
+    <header class="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 md:px-6 py-3 flex items-center gap-3">
+
+      <button onclick="toggleSidebar()"
+              class="p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition flex-shrink-0">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
       </button>
 
-      <!-- Page title -->
-      <div class="font-semibold text-gray-900 text-sm mr-auto">Prazos Processuais</div>
+      <p class="font-bold text-gray-900 mr-auto">Prazos Processuais</p>
 
-      <!-- Search (desktop) -->
-      <div class="hidden sm:flex items-center bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 gap-2 w-64 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition">
+      <!-- Busca desktop — referencia: p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 -->
+      <div class="hidden sm:flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 w-64
+                  focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition bg-white">
         <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
         <input id="search" type="text" placeholder="Cliente ou processo..."
-               class="bg-transparent text-sm outline-none text-gray-700 placeholder-gray-400 w-full"
+               class="text-sm outline-none text-gray-800 placeholder-gray-400 w-full"
                oninput="onSearch(this.value)">
       </div>
 
-      <!-- New prazo button -->
+      <!-- Botao primario — referencia: bg-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-105 -->
       <button onclick="openModal()"
-              class="flex items-center gap-2 bg-blue-600 text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-blue-700 transition-transform transform hover:scale-105 flex-shrink-0">
+              class="bg-blue-600 text-white font-bold py-2 px-4 md:px-6 rounded-lg shadow-md hover:bg-blue-700 transition-transform transform hover:scale-105 flex items-center gap-2 flex-shrink-0">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
@@ -83,109 +98,109 @@
       </button>
     </header>
 
-    <!-- ── Content ─────────────────────────────────────── -->
-    <main class="flex-1 p-4 lg:p-6 space-y-4">
+    <!-- ── CONTENT ── -->
+    <main class="flex-1 p-4 md:p-6 space-y-4">
 
-      <!-- Search (mobile) -->
-      <div class="sm:hidden flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2.5 gap-2 shadow-sm focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition">
+      <!-- Busca mobile -->
+      <div class="sm:hidden flex items-center border border-gray-200 rounded-lg px-3 py-2.5 gap-2 bg-white
+                  focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition">
         <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
         <input type="text" placeholder="Buscar por cliente ou processo..."
-               class="bg-transparent text-sm outline-none text-gray-700 placeholder-gray-400 w-full"
+               class="text-sm outline-none text-gray-800 placeholder-gray-400 w-full"
                oninput="document.getElementById('search').value=this.value; onSearch(this.value)">
       </div>
 
-      <!-- Metrics -->
+      <!-- ── METRICAS ── referencia: p-4 border rounded-lg do arquivo base -->
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
 
-        <div class="metric-card bg-white rounded-xl border border-gray-200 shadow-sm p-4 cursor-pointer hover:shadow-md transition select-none"
+        <div class="metric-card bg-white p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer select-none"
              data-nivel="fatal" onclick="clickMetric('fatal')">
-          <div class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Fatal</div>
-          <div id="cnt-fatal" class="text-3xl font-bold mono text-red-600">-</div>
+          <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Fatal</p>
+          <p id="cnt-fatal" class="text-3xl font-bold mono text-red-600">-</p>
         </div>
 
-        <div class="metric-card bg-white rounded-xl border border-gray-200 shadow-sm p-4 cursor-pointer hover:shadow-md transition select-none"
+        <div class="metric-card bg-white p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer select-none"
              data-nivel="critico" onclick="clickMetric('critico')">
-          <div class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Critico</div>
-          <div id="cnt-critico" class="text-3xl font-bold mono text-red-500">-</div>
+          <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Critico</p>
+          <p id="cnt-critico" class="text-3xl font-bold mono text-red-500">-</p>
         </div>
 
-        <div class="metric-card bg-white rounded-xl border border-gray-200 shadow-sm p-4 cursor-pointer hover:shadow-md transition select-none"
+        <div class="metric-card bg-white p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer select-none"
              data-nivel="atencao" onclick="clickMetric('atencao')">
-          <div class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Atencao</div>
-          <div id="cnt-atencao" class="text-3xl font-bold mono text-orange-500">-</div>
+          <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Atencao</p>
+          <p id="cnt-atencao" class="text-3xl font-bold mono text-orange-500">-</p>
         </div>
 
-        <div class="metric-card bg-white rounded-xl border border-gray-200 shadow-sm p-4 cursor-pointer hover:shadow-md transition select-none"
+        <div class="metric-card bg-white p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer select-none"
              data-nivel="no_prazo" onclick="clickMetric('no_prazo')">
-          <div class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">No Prazo</div>
-          <div id="cnt-no_prazo" class="text-3xl font-bold mono text-blue-600">-</div>
+          <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">No Prazo</p>
+          <p id="cnt-no_prazo" class="text-3xl font-bold mono text-blue-600">-</p>
         </div>
 
-        <div class="metric-card bg-white rounded-xl border border-gray-200 shadow-sm p-4 cursor-pointer hover:shadow-md transition select-none col-span-2 md:col-span-1"
+        <div class="metric-card bg-white p-4 border rounded-lg hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer select-none col-span-2 md:col-span-1"
              data-nivel="aguardando" onclick="clickMetric('aguardando')">
-          <div class="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Aguardando</div>
-          <div id="cnt-aguardando" class="text-3xl font-bold mono text-gray-400">-</div>
+          <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Aguardando</p>
+          <p id="cnt-aguardando" class="text-3xl font-bold mono text-gray-400">-</p>
         </div>
 
       </div>
 
-      <!-- Filters card -->
-      <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 space-y-3">
+      <!-- ── FILTROS ── referencia: p-4 border rounded-lg dos botoes de escolha do arquivo base -->
+      <div class="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
 
-        <!-- Urgency -->
         <div class="flex items-start gap-3 flex-wrap">
-          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider pt-1.5 w-20 flex-shrink-0">Urgencia</span>
-          <div id="fg-nivel" class="flex gap-1.5 flex-wrap">
-            <button data-v="todos"      onclick="setNivel('todos')"      class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition">Todos</button>
-            <button data-v="fatal"      onclick="setNivel('fatal')"      class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition">Fatal</button>
-            <button data-v="critico"    onclick="setNivel('critico')"    class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition">Critico</button>
-            <button data-v="atencao"    onclick="setNivel('atencao')"    class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition">Atencao</button>
-            <button data-v="no_prazo"   onclick="setNivel('no_prazo')"   class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition">No Prazo</button>
-            <button data-v="aguardando" onclick="setNivel('aguardando')" class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition">Aguardando</button>
+          <span class="text-xs font-bold uppercase tracking-widest text-gray-400 pt-2 w-20 flex-shrink-0">Urgencia</span>
+          <div id="fg-nivel" class="flex gap-2 flex-wrap">
+            <button data-v="todos"      onclick="setNivel('todos')"      class="fbtn p-2 px-4 border rounded-lg text-sm transition">Todos</button>
+            <button data-v="fatal"      onclick="setNivel('fatal')"      class="fbtn p-2 px-4 border rounded-lg text-sm transition">Fatal</button>
+            <button data-v="critico"    onclick="setNivel('critico')"    class="fbtn p-2 px-4 border rounded-lg text-sm transition">Critico</button>
+            <button data-v="atencao"    onclick="setNivel('atencao')"    class="fbtn p-2 px-4 border rounded-lg text-sm transition">Atencao</button>
+            <button data-v="no_prazo"   onclick="setNivel('no_prazo')"   class="fbtn p-2 px-4 border rounded-lg text-sm transition">No Prazo</button>
+            <button data-v="aguardando" onclick="setNivel('aguardando')" class="fbtn p-2 px-4 border rounded-lg text-sm transition">Aguardando</button>
           </div>
         </div>
 
-        <!-- Divider -->
-        <div class="border-t border-gray-100"></div>
+        <hr class="border-gray-100">
 
-        <!-- Lawyer + toggle -->
         <div class="flex items-center gap-3 flex-wrap">
-          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider w-20 flex-shrink-0">Advogado</span>
-          <div id="fg-adv" class="flex gap-1.5 flex-wrap flex-1">
-            <button data-v="todos"   onclick="setAdv('todos')"   class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition">Todos</button>
-            <button data-v="Ricardo" onclick="setAdv('Ricardo')" class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition">Ricardo</button>
-            <button data-v="Athos"   onclick="setAdv('Athos')"   class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition">Athos</button>
-            <button data-v="Romulo"  onclick="setAdv('Romulo')"  class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition">Romulo</button>
+          <span class="text-xs font-bold uppercase tracking-widest text-gray-400 w-20 flex-shrink-0">Advogado</span>
+          <div id="fg-adv" class="flex gap-2 flex-wrap flex-1">
+            <button data-v="todos"   onclick="setAdv('todos')"   class="fbtn p-2 px-4 border rounded-lg text-sm transition">Todos</button>
+            <button data-v="Ricardo" onclick="setAdv('Ricardo')" class="fbtn p-2 px-4 border rounded-lg text-sm transition">Ricardo</button>
+            <button data-v="Athos"   onclick="setAdv('Athos')"   class="fbtn p-2 px-4 border rounded-lg text-sm transition">Athos</button>
+            <button data-v="Romulo"  onclick="setAdv('Romulo')"  class="fbtn p-2 px-4 border rounded-lg text-sm transition">Romulo</button>
           </div>
+          <!-- Toggle — referencia: peer sr-only pattern do Tailwind Play CDN -->
           <label class="flex items-center gap-2 cursor-pointer ml-auto flex-shrink-0">
-            <span class="text-xs text-gray-500 font-medium">Mostrar concluidos</span>
-            <div class="relative w-9 h-5">
+            <span class="text-sm text-gray-600">Mostrar concluidos</span>
+            <div class="relative w-10 h-6">
               <input type="checkbox" id="tog-conc" class="peer sr-only" onchange="onToggleConc()">
-              <div class="absolute inset-0 bg-gray-200 peer-checked:bg-blue-600 rounded-full cursor-pointer transition-colors duration-200"></div>
-              <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 peer-checked:translate-x-4"></div>
+              <div class="absolute inset-0 bg-gray-300 peer-checked:bg-blue-600 rounded-full cursor-pointer transition-colors duration-200"></div>
+              <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 peer-checked:translate-x-4"></div>
             </div>
           </label>
         </div>
 
       </div>
 
-      <!-- Table -->
-      <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <!-- ── TABELA ── referencia: bg-white border rounded-lg do arquivo base -->
+      <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
+              <!-- referencia: bg-gray-50 do hero e footer sections -->
               <tr class="bg-gray-50 border-b border-gray-200">
-                <th class="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">Cliente</th>
-                <th class="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">Processo</th>
-                <th class="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap hidden md:table-cell">Sistema</th>
-                <th class="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap hidden lg:table-cell">Instancia</th>
-                <th class="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap hidden lg:table-cell">Tipo</th>
-                <th class="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">Vencimento</th>
-                <th class="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap hidden md:table-cell">Responsavel</th>
-                <th class="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">Urgencia</th>
-                <th class="px-4 py-3 w-24"></th>
+                <th class="text-left px-4 py-3 text-xs font-bold uppercase tracking-widest text-gray-500 whitespace-nowrap">Cliente</th>
+                <th class="text-left px-4 py-3 text-xs font-bold uppercase tracking-widest text-gray-500 whitespace-nowrap">Processo</th>
+                <th class="text-left px-4 py-3 text-xs font-bold uppercase tracking-widest text-gray-500 whitespace-nowrap hidden md:table-cell">Sistema</th>
+                <th class="text-left px-4 py-3 text-xs font-bold uppercase tracking-widest text-gray-500 whitespace-nowrap hidden lg:table-cell">Instancia</th>
+                <th class="text-left px-4 py-3 text-xs font-bold uppercase tracking-widest text-gray-500 whitespace-nowrap hidden lg:table-cell">Tipo</th>
+                <th class="text-left px-4 py-3 text-xs font-bold uppercase tracking-widest text-gray-500 whitespace-nowrap">Vencimento</th>
+                <th class="text-left px-4 py-3 text-xs font-bold uppercase tracking-widest text-gray-500 whitespace-nowrap hidden md:table-cell">Responsavel</th>
+                <th class="text-left px-4 py-3 text-xs font-bold uppercase tracking-widest text-gray-500 whitespace-nowrap">Urgencia</th>
+                <th class="px-4 py-3 w-28"></th>
               </tr>
             </thead>
             <tbody id="tbody">
@@ -200,123 +215,135 @@
     </main>
   </div>
 
-  <!-- ── Modal ──────────────────────────────────────────── -->
-  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden items-center justify-center p-4"
+  <!-- ══════════════════════════════════════════════
+       MODAL — referencia: bg-white rounded-2xl shadow-2xl w-full max-w-2xl
+                           max-h-[90vh] flex flex-col (identico ao wizard do arquivo base)
+  ══════════════════════════════════════════════ -->
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-40"
        onclick="overlayClick(event)">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col animate-fadeIn">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
 
-      <div class="px-6 pt-5 pb-4 border-b border-gray-100 flex items-center justify-between">
-        <h2 class="text-lg font-bold text-gray-900">Novo Prazo</h2>
-        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-700 transition p-1.5 rounded-lg hover:bg-gray-100">
+      <!-- Header modal -->
+      <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+        <h2 class="text-xl font-bold text-gray-900">Novo Prazo</h2>
+        <!-- referencia: text-gray-600 hover:text-gray-900 transition do botao Fechar -->
+        <button onclick="closeModal()" class="text-gray-600 hover:text-gray-900 transition p-1 rounded-lg hover:bg-gray-100">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>
       </div>
 
-      <div class="p-6 overflow-y-auto flex-1 space-y-4">
-        <div class="grid grid-cols-2 gap-4">
+      <!-- Body modal -->
+      <div class="p-6 overflow-y-auto flex-1">
+        <div class="space-y-4">
 
-          <div class="col-span-2">
-            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">Cliente</label>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
+            <!-- referencia: w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 -->
             <input type="text" id="f-cliente" placeholder="Nome do cliente"
-                   class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm outline-none transition">
+                   class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
           </div>
 
-          <div class="col-span-2">
-            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">Numero do Processo</label>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Numero do Processo</label>
             <input type="text" id="f-processo" placeholder="0000000-00.0000.0.00.0000"
-                   class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm mono outline-none transition">
+                   class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition mono">
           </div>
 
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">Sistema</label>
-            <select id="f-sistema" class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm outline-none transition bg-white">
-              <option value="">Selecionar</option>
-              <option>PJe</option>
-              <option>e-SAJ</option>
-              <option>PROJUDI</option>
-              <option>EPROC</option>
-              <option>CRETA</option>
-              <option>Themis</option>
-              <option>eproc TJTO</option>
-              <option>PJE1 TRF1</option>
-              <option>PJE2 TRF1</option>
-              <option>Outros</option>
-            </select>
-          </div>
+          <div class="grid grid-cols-2 gap-4">
 
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">Instancia</label>
-            <select id="f-instancia" class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm outline-none transition bg-white">
-              <option value="">Selecionar</option>
-              <option>1 Instancia</option>
-              <option>2 Instancia</option>
-              <option>TJ / TRF</option>
-              <option>STJ</option>
-              <option>STF</option>
-              <option>TST</option>
-              <option>Arbitragem</option>
-              <option>Extrajudicial</option>
-            </select>
-          </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Sistema</label>
+              <select id="f-sistema" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition bg-white">
+                <option value="">Selecionar</option>
+                <option>PJe</option>
+                <option>e-SAJ</option>
+                <option>PROJUDI</option>
+                <option>EPROC</option>
+                <option>CRETA</option>
+                <option>Themis</option>
+                <option>eproc TJTO</option>
+                <option>PJE1 TRF1</option>
+                <option>PJE2 TRF1</option>
+                <option>Outros</option>
+              </select>
+            </div>
 
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">Tipo de Prazo</label>
-            <select id="f-tipo" class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm outline-none transition bg-white">
-              <option value="">Selecionar</option>
-              <option>Recurso</option>
-              <option>Contestacao</option>
-              <option>Peticao</option>
-              <option>Manifestacao</option>
-              <option>Impugnacao</option>
-              <option>Replica</option>
-              <option>Memoriais</option>
-              <option>Sustentacao Oral</option>
-              <option>Acordo</option>
-              <option>Intimacao eletronica</option>
-              <option>Decisao</option>
-              <option>Despacho Decisao</option>
-              <option>Outros</option>
-            </select>
-          </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Instancia</label>
+              <select id="f-instancia" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition bg-white">
+                <option value="">Selecionar</option>
+                <option>1 Instancia</option>
+                <option>2 Instancia</option>
+                <option>TJ / TRF</option>
+                <option>STJ</option>
+                <option>STF</option>
+                <option>TST</option>
+                <option>Arbitragem</option>
+                <option>Extrajudicial</option>
+              </select>
+            </div>
 
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">Vencimento</label>
-            <input type="date" id="f-vencimento"
-                   class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm outline-none transition">
-          </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Prazo</label>
+              <select id="f-tipo" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition bg-white">
+                <option value="">Selecionar</option>
+                <option>Recurso</option>
+                <option>Contestacao</option>
+                <option>Peticao</option>
+                <option>Manifestacao</option>
+                <option>Impugnacao</option>
+                <option>Replica</option>
+                <option>Memoriais</option>
+                <option>Sustentacao Oral</option>
+                <option>Acordo</option>
+                <option>Intimacao eletronica</option>
+                <option>Decisao</option>
+                <option>Despacho Decisao</option>
+                <option>Outros</option>
+              </select>
+            </div>
 
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">Responsavel</label>
-            <select id="f-login" class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm outline-none transition bg-white">
-              <option value="">Selecionar</option>
-              <option value="Ricardo">Ricardo</option>
-              <option value="Athos">Athos</option>
-              <option value="Romulo">Romulo</option>
-              <option value="Athos e Rômulo">Athos e Romulo</option>
-              <option value="Todos">Todos</option>
-            </select>
-          </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Vencimento</label>
+              <input type="date" id="f-vencimento"
+                     class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+            </div>
 
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">Urgencia</label>
-            <select id="f-nivel" class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm outline-none transition bg-white">
-              <option value="">Automatico (por data)</option>
-              <option value="aguardando">Aguardando</option>
-            </select>
-          </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Responsavel</label>
+              <select id="f-login" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition bg-white">
+                <option value="">Selecionar</option>
+                <option value="Ricardo">Ricardo</option>
+                <option value="Athos">Athos</option>
+                <option value="Romulo">Romulo</option>
+                <option value="Athos e Rômulo">Athos e Romulo</option>
+                <option value="Todos">Todos</option>
+              </select>
+            </div>
 
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Urgencia</label>
+              <select id="f-nivel" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition bg-white">
+                <option value="">Automatico (por data)</option>
+                <option value="aguardando">Aguardando</option>
+              </select>
+            </div>
+
+          </div>
         </div>
       </div>
 
-      <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
-        <button onclick="closeModal()"
-                class="px-4 py-2 text-sm font-semibold text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+      <!-- Footer modal — referencia: p-4 bg-gray-50 border-t flex items-center justify-between -->
+      <div class="p-4 bg-gray-50 border-t flex items-center justify-end gap-3">
+        <!-- referencia: text-gray-600 hover:text-gray-900 transition (botao Fechar do arquivo base) -->
+        <button onclick="closeModal()" class="text-gray-600 hover:text-gray-900 transition px-4 py-2 rounded-lg hover:bg-gray-200">
           Cancelar
         </button>
+        <!-- referencia: bg-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700 transition-transform transform hover:scale-105 -->
         <button id="btn-save" onclick="submitForm()"
-                class="px-6 py-2 text-sm font-bold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
           Salvar Prazo
         </button>
       </div>
@@ -324,14 +351,15 @@
     </div>
   </div>
 
-  <!-- ── Toast ──────────────────────────────────────────── -->
+  <!-- ── TOAST ── referencia: animacao fadeIn do arquivo base adaptada -->
   <div id="toast" role="alert" aria-live="polite"
        class="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium max-w-xs pointer-events-none
               opacity-0 translate-y-2 transition-all duration-300">
   </div>
 
-  <!-- ── Supabase ───────────────────────────────────────── -->
+  <!-- ── Supabase SDK ── -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
     'use strict';
 
@@ -352,7 +380,7 @@
     let searchStr = '';
     let showConc  = false;
 
-    // ── Urgencia ─────────────────────────────────────────────────
+    // ── Calculo de urgencia ──────────────────────────────────────
     function calcNivel(p) {
       if (p.nivel === 'aguardando') return 'aguardando';
       if (!p.vencimento)            return 'aguardando';
@@ -365,20 +393,23 @@
       return 'no_prazo';
     }
 
-    const NIVEL_LABEL = { fatal:'Fatal', critico:'Critico', atencao:'Atencao', no_prazo:'No Prazo', aguardando:'Aguardando' };
-
-    // Badge classes por nivel
-    const BADGE_CLASS = {
-      fatal:      'bg-red-100 text-red-700 border border-red-200',
-      critico:    'bg-red-50  text-red-600 border border-red-200',
-      atencao:    'bg-orange-100 text-orange-700 border border-orange-200',
-      no_prazo:   'bg-blue-100 text-blue-700 border border-blue-200',
-      aguardando: 'bg-gray-100 text-gray-500 border border-gray-200',
+    const NIVEL_LABEL = {
+      fatal:'Fatal', critico:'Critico', atencao:'Atencao',
+      no_prazo:'No Prazo', aguardando:'Aguardando'
     };
 
-    // Vencimento text color por nivel
+    // Badges — referencia: p-4 border rounded-lg hover:bg-gray-100 hover:border-blue-500
+    // adaptado para badges inline com cor por urgencia
+    const BADGE = {
+      fatal:      'border border-red-300 bg-red-50 text-red-700',
+      critico:    'border border-red-200 bg-red-50 text-red-600',
+      atencao:    'border border-orange-300 bg-orange-50 text-orange-700',
+      no_prazo:   'border border-blue-300 bg-blue-50 text-blue-700',
+      aguardando: 'border border-gray-200 bg-gray-50 text-gray-500',
+    };
+
     const VENC_COLOR = {
-      fatal:      'text-red-600 font-semibold',
+      fatal:      'text-red-600 font-bold',
       critico:    'text-red-500 font-semibold',
       atencao:    'text-orange-600 font-semibold',
       no_prazo:   'text-blue-600',
@@ -402,10 +433,11 @@
       return d + '/' + m + '/' + y;
     }
 
-    // ── Supabase — ler ────────────────────────────────────────────
+    // ── loadRows ─────────────────────────────────────────────────
     async function loadRows() {
       try {
-        let q = db.from('prazos').select('*').order('vencimento', { ascending: true, nullsFirst: false });
+        let q = db.from('prazos').select('*')
+                  .order('vencimento', { ascending: true, nullsFirst: false });
         if (!showConc) q = q.or('concluido.is.null,concluido.eq.false');
         const { data, error } = await q;
         if (error) throw error;
@@ -419,13 +451,13 @@
       }
     }
 
-    // ── Supabase — inserir ────────────────────────────────────────
+    // ── insertRow ────────────────────────────────────────────────
     async function insertRow(payload) {
       const { error } = await db.from('prazos').insert([payload]);
       if (error) throw error;
     }
 
-    // ── Supabase — concluir ───────────────────────────────────────
+    // ── markDone ─────────────────────────────────────────────────
     async function markDone(id) {
       const { error } = await db.from('prazos').update({ concluido: true }).eq('id', id);
       if (error) throw error;
@@ -438,12 +470,11 @@
         if (fNivel !== 'todos' && n !== fNivel) return false;
         if (fAdv !== 'todos') {
           const login = (p.login || '').toLowerCase();
-          const match = login.includes(fAdv.toLowerCase()) || login === 'todos';
-          if (!match) return false;
+          if (!login.includes(fAdv.toLowerCase()) && login !== 'todos') return false;
         }
         if (searchStr) {
           const t = searchStr.toLowerCase();
-          if (!(p.cliente || '').toLowerCase().includes(t) &&
+          if (!(p.cliente  || '').toLowerCase().includes(t) &&
               !(p.processo || '').toLowerCase().includes(t)) return false;
         }
         return true;
@@ -465,51 +496,47 @@
     function renderTable() {
       const data  = filtered();
       const tbody = document.getElementById('tbody');
-
       if (!data.length) {
         tbody.innerHTML = `
           <tr>
             <td colspan="9" class="px-4 py-16 text-center">
-              <p class="text-gray-700 font-medium mb-1">Nenhum prazo encontrado</p>
-              <p class="text-gray-400 text-sm">Ajuste os filtros ou adicione um novo prazo.</p>
+              <p class="font-medium text-gray-700 mb-1">Nenhum prazo encontrado</p>
+              <p class="text-sm text-gray-400">Ajuste os filtros ou adicione um novo prazo.</p>
             </td>
           </tr>`;
         return;
       }
-
       tbody.innerHTML = data.map(p => {
         const n     = calcNivel(p);
         const delta = deltaLabel(p);
         const done  = !!p.concluido;
-        const rowBg = done ? 'bg-gray-50 opacity-60' : 'hover:bg-gray-50';
         return `
-          <tr class="${rowBg} transition-colors border-b border-gray-100 last:border-0">
-            <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap max-w-[180px] truncate">${esc(p.cliente || '-')}</td>
+          <tr class="${done ? 'opacity-50' : 'hover:bg-gray-100'} transition border-b border-gray-100 last:border-0">
+            <td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap max-w-xs truncate">${esc(p.cliente || '-')}</td>
             <td class="px-4 py-3 mono text-xs text-gray-500 whitespace-nowrap">${esc(p.processo || '-')}</td>
-            <td class="px-4 py-3 text-gray-500 text-xs whitespace-nowrap hidden md:table-cell">${esc(p.sistema || '-')}</td>
-            <td class="px-4 py-3 text-gray-500 text-xs whitespace-nowrap hidden lg:table-cell">${esc(p.instancia || '-')}</td>
-            <td class="px-4 py-3 text-gray-500 text-xs whitespace-nowrap hidden lg:table-cell max-w-[160px] truncate">${esc(p.tipo || '-')}</td>
+            <td class="px-4 py-3 text-sm text-gray-500 whitespace-nowrap hidden md:table-cell">${esc(p.sistema || '-')}</td>
+            <td class="px-4 py-3 text-sm text-gray-500 whitespace-nowrap hidden lg:table-cell">${esc(p.instancia || '-')}</td>
+            <td class="px-4 py-3 text-sm text-gray-500 whitespace-nowrap hidden lg:table-cell max-w-[180px] truncate">${esc(p.tipo || '-')}</td>
             <td class="px-4 py-3 whitespace-nowrap">
               <span class="block mono text-sm ${VENC_COLOR[n]}">${fmtDate(p.vencimento)}</span>
-              ${delta ? `<span class="block mono text-xs text-gray-400 mt-0.5">${delta}</span>` : ''}
+              ${delta ? `<span class="block mono text-xs text-gray-400">${delta}</span>` : ''}
             </td>
-            <td class="px-4 py-3 text-gray-500 text-xs whitespace-nowrap hidden md:table-cell">${esc(p.login || '-')}</td>
-            <td class="px-4 py-3">
-              <span class="inline-block px-2 py-0.5 rounded-md text-xs font-semibold mono ${BADGE_CLASS[n]}">
-                ${NIVEL_LABEL[n] || n}
+            <td class="px-4 py-3 text-sm text-gray-500 whitespace-nowrap hidden md:table-cell">${esc(p.login || '-')}</td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              <span class="inline-block px-2.5 py-0.5 rounded-md text-xs font-semibold mono ${BADGE[n]}">
+                ${NIVEL_LABEL[n]}
               </span>
             </td>
-            <td class="px-4 py-3 text-right">
+            <td class="px-4 py-3 text-right whitespace-nowrap">
               ${done
-                ? `<span class="inline-flex items-center gap-1 text-xs font-semibold text-green-600">
+                ? `<span class="text-xs font-semibold text-green-600 flex items-center gap-1 justify-end">
                      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                     </svg>
-                     Concluido
+                     </svg>Concluido
                    </span>`
                 : `<button onclick="handleConcluir('${esc(p.id)}')"
-                           class="text-xs font-semibold text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg
-                                  hover:border-green-400 hover:text-green-600 hover:bg-green-50 transition whitespace-nowrap">
+                           class="text-sm text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg
+                                  hover:bg-gray-100 hover:border-blue-500 hover:text-blue-600 transition">
                      Concluir
                    </button>`
               }
@@ -518,46 +545,38 @@
       }).join('');
     }
 
-    function render() {
-      renderMetrics();
-      renderTable();
-      syncFilterButtons();
-    }
+    function render() { renderMetrics(); renderTable(); syncBtns(); }
 
-    // ── Sync visual dos botoes de filtro ──────────────────────────
-    const ACTIVE_CLASSES = {
-      todos:      'bg-blue-600 border-blue-600 text-white',
-      fatal:      'bg-red-600  border-red-600  text-white',
-      critico:    'bg-red-500  border-red-500  text-white',
-      atencao:    'bg-orange-500 border-orange-500 text-white',
-      no_prazo:   'bg-blue-600 border-blue-600 text-white',
-      aguardando: 'bg-gray-500 border-gray-500 text-white',
-    };
-    const INACTIVE = 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50';
+    // ── Sync botoes de filtro ─────────────────────────────────────
+    // Ativo: bg-blue-600 text-white (referencia: botao primario do arquivo base)
+    // Inativo: p-4 border rounded-lg hover:bg-gray-100 hover:border-blue-500 (referencia: choice-btn)
+    const ACTIVE_BTN  = 'bg-blue-600 text-white border-blue-600 font-bold';
+    const INATIVE_BTN = 'bg-white text-gray-600 border-gray-200 hover:bg-gray-100 hover:border-blue-500';
 
-    function syncFilterButtons() {
+    function syncBtns() {
       document.querySelectorAll('#fg-nivel button').forEach(b => {
         const on = b.dataset.v === fNivel;
-        b.className = `px-3 py-1.5 text-xs font-semibold rounded-lg border transition ${on ? ACTIVE_CLASSES[b.dataset.v] : INACTIVE}`;
+        b.className = `fbtn p-2 px-4 border rounded-lg text-sm transition ${on ? ACTIVE_BTN : INATIVE_BTN}`;
       });
       document.querySelectorAll('#fg-adv button').forEach(b => {
         const on = b.dataset.v === fAdv;
-        b.className = `px-3 py-1.5 text-xs font-semibold rounded-lg border transition ${on ? ACTIVE_CLASSES.todos : INACTIVE}`;
+        b.className = `fbtn p-2 px-4 border rounded-lg text-sm transition ${on ? ACTIVE_BTN : INATIVE_BTN}`;
       });
-      // Metric cards ring
       document.querySelectorAll('.metric-card').forEach(c => {
         const on = c.dataset.nivel === fNivel;
-        c.classList.toggle('ring-2', on);
-        c.classList.toggle('ring-blue-400', on && !['fatal','critico','atencao','aguardando'].includes(fNivel));
-        c.classList.toggle('ring-red-400',  on && ['fatal','critico'].includes(fNivel));
-        c.classList.toggle('ring-orange-400', on && fNivel === 'atencao');
-        c.classList.toggle('ring-gray-300',   on && fNivel === 'aguardando');
+        if (on) {
+          c.classList.add('border-blue-500', 'bg-blue-50');
+          c.classList.remove('border-gray-200');
+        } else {
+          c.classList.remove('border-blue-500', 'bg-blue-50');
+          c.classList.add('border-gray-200');
+        }
       });
     }
 
-    // ── Handlers ────────────────────────────────────────────────
-    function setNivel(v) { fNivel = v; syncFilterButtons(); renderTable(); }
-    function setAdv(v)   { fAdv   = v; syncFilterButtons(); renderTable(); }
+    // ── Handlers ─────────────────────────────────────────────────
+    function setNivel(v) { fNivel = v; syncBtns(); renderTable(); }
+    function setAdv(v)   { fAdv   = v; syncBtns(); renderTable(); }
     function clickMetric(nivel) { setNivel(fNivel === nivel ? 'todos' : nivel); }
     function onSearch(v) { searchStr = v; renderTable(); }
 
@@ -572,7 +591,7 @@
         toast('Prazo marcado como concluido.', 'ok');
         await loadRows();
       } catch (e) {
-        toast('Erro ao concluir prazo: ' + e.message, 'err');
+        toast('Erro ao concluir: ' + e.message, 'err');
       }
     }
 
@@ -585,9 +604,8 @@
     }
 
     function closeModal() {
-      const el = document.getElementById('overlay');
-      el.classList.add('hidden');
-      el.classList.remove('flex');
+      document.getElementById('overlay').classList.add('hidden');
+      document.getElementById('overlay').classList.remove('flex');
       ['f-cliente','f-processo','f-vencimento'].forEach(id => (document.getElementById(id).value = ''));
       ['f-sistema','f-instancia','f-tipo','f-login','f-nivel'].forEach(id => (document.getElementById(id).selectedIndex = 0));
     }
@@ -604,15 +622,14 @@
 
       try {
         await insertRow({
-          cliente,
-          processo,
-          sistema:   document.getElementById('f-sistema').value   || null,
-          instancia: document.getElementById('f-instancia').value || null,
-          tipo:      document.getElementById('f-tipo').value      || null,
-          vencimento:document.getElementById('f-vencimento').value || null,
-          login:     document.getElementById('f-login').value     || null,
-          nivel:     document.getElementById('f-nivel').value     || null,
-          concluido: false,
+          cliente, processo,
+          sistema:    document.getElementById('f-sistema').value    || null,
+          instancia:  document.getElementById('f-instancia').value  || null,
+          tipo:       document.getElementById('f-tipo').value       || null,
+          vencimento: document.getElementById('f-vencimento').value || null,
+          login:      document.getElementById('f-login').value      || null,
+          nivel:      document.getElementById('f-nivel').value      || null,
+          concluido:  false,
         });
         toast('Prazo salvo com sucesso.', 'ok');
         closeModal();
@@ -624,16 +641,17 @@
       }
     }
 
-    // ── Sidebar toggle ───────────────────────────────────────────
+    // ── Sidebar ──────────────────────────────────────────────────
     let sidebarOpen = false;
-
-    function toggleSidebar() { sidebarOpen ? closeSidebar() : openSidebar(); }
 
     function openSidebar() {
       sidebarOpen = true;
       document.getElementById('sidebar').style.transform = 'translateX(0)';
-      document.getElementById('sidebar-overlay').classList.remove('hidden');
-      document.getElementById('main-wrap').style.marginLeft = window.innerWidth >= 1024 ? '256px' : '0';
+      if (window.innerWidth < 1024) {
+        document.getElementById('sidebar-overlay').classList.remove('hidden');
+      } else {
+        document.getElementById('main-wrap').style.marginLeft = '256px';
+      }
     }
 
     function closeSidebar() {
@@ -643,34 +661,28 @@
       document.getElementById('main-wrap').style.marginLeft = '0';
     }
 
-    // On desktop, open sidebar by default
-    function initSidebar() {
-      if (window.innerWidth >= 1024) {
-        document.getElementById('sidebar').style.transform = 'translateX(0)';
-        document.getElementById('main-wrap').style.marginLeft = '256px';
-        sidebarOpen = true;
-      }
-    }
+    function toggleSidebar() { sidebarOpen ? closeSidebar() : openSidebar(); }
 
     window.addEventListener('resize', () => {
-      if (window.innerWidth >= 1024 && !sidebarOpen) openSidebar();
-      if (window.innerWidth < 1024  &&  sidebarOpen) closeSidebar();
+      if (window.innerWidth >= 1024) {
+        document.getElementById('sidebar-overlay').classList.add('hidden');
+        if (sidebarOpen) document.getElementById('main-wrap').style.marginLeft = '256px';
+      } else {
+        document.getElementById('main-wrap').style.marginLeft = '0';
+      }
     });
 
     // ── Toast ────────────────────────────────────────────────────
     let _tt;
     function toast(msg, type = 'ok') {
-      const el = document.getElementById('toast');
+      const el  = document.getElementById('toast');
       el.textContent = msg;
-      el.className = `fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium max-w-xs pointer-events-none
-        opacity-100 translate-y-0 transition-all duration-300
-        ${type === 'ok'
-          ? 'bg-white border border-green-200 text-green-700 border-l-4 border-l-green-500'
-          : 'bg-white border border-red-200 text-red-700 border-l-4 border-l-red-500'}`;
+      const cls = type === 'ok'
+        ? 'bg-white border border-green-300 text-green-700 border-l-4 border-l-green-500 shadow-lg rounded-xl px-4 py-3 text-sm font-medium max-w-xs pointer-events-none opacity-100 translate-y-0 transition-all duration-300 fixed bottom-6 right-6 z-50'
+        : 'bg-white border border-red-300 text-red-700 border-l-4 border-l-red-500 shadow-lg rounded-xl px-4 py-3 text-sm font-medium max-w-xs pointer-events-none opacity-100 translate-y-0 transition-all duration-300 fixed bottom-6 right-6 z-50';
+      el.className = cls;
       clearTimeout(_tt);
-      _tt = setTimeout(() => {
-        el.className = el.className.replace('opacity-100 translate-y-0', 'opacity-0 translate-y-2');
-      }, 3200);
+      _tt = setTimeout(() => { el.className = el.className.replace('opacity-100 translate-y-0','opacity-0 translate-y-2'); }, 3200);
     }
 
     // ── Util ─────────────────────────────────────────────────────
@@ -682,8 +694,8 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
     // ── Boot ─────────────────────────────────────────────────────
-    initSidebar();
-    syncFilterButtons();
+    if (window.innerWidth >= 1024) openSidebar();
+    syncBtns();
     loadRows();
   </script>
 </body>
