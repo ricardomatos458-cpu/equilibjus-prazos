@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EQUILIBJUS Prazos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg:        #0D1117;
+      --card:      #161B22;
+      --border:    #30363D;
+      --text:      #E6EDF3;
+      --muted:     #8B949E;
+      --green:     #7EE787;
+      --blue:      #79C0FF;
+      --red:       #FF7B72;
+      --orange:    #FFA657;
+      --font-data: 'Fira Code', monospace;
+      --font-ui:   'Outfit', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ── Header ─────────────────────────────── */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-name {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+
+    .brand-sub {
+      font-family: var(--font-data);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #0D1117;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover { opacity: 0.82; }
+
+    /* ── Layout ──────────────────────────────── */
+    .main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* ── Metrics ─────────────────────────────── */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      user-select: none;
+    }
+
+    .metric-card:hover { border-color: var(--muted); }
+    .metric-card.selected { border-color: currentColor; }
+
+    .metric-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .metric-value {
+      font-family: var(--font-data);
+      font-size: 30px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .metric-card[data-nivel="fatal"]      .metric-value,
+    .metric-card[data-nivel="critico"]    .metric-value { color: var(--red); }
+    .metric-card[data-nivel="atencao"]    .metric-value { color: var(--orange); }
+    .metric-card[data-nivel="no_prazo"]   .metric-value { color: var(--blue); }
+    .metric-card[data-nivel="aguardando"] .metric-value { color: var(--muted); }
+
+    /* ── Toolbar ─────────────────────────────── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .input-field {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .input-field:focus { border-color: var(--blue); }
+    .input-field::placeholder { color: var(--muted); }
+
+    .filter-group { display: flex; gap: 4px; flex-wrap: wrap; }
+
+    .fbtn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 7px 13px;
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .fbtn:hover { border-color: var(--blue); color: var(--text); }
+
+    .fbtn.on                       { background: rgba(121,192,255,0.1); border-color: var(--blue);   color: var(--blue);   }
+    .fbtn.on[data-v="fatal"],
+    .fbtn.on[data-v="critico"]     { background: rgba(255,123,114,0.1); border-color: var(--red);    color: var(--red);    }
+    .fbtn.on[data-v="atencao"]     { background: rgba(255,166,87,0.1);  border-color: var(--orange); color: var(--orange); }
+    .fbtn.on[data-v="aguardando"]  { background: rgba(139,148,158,0.1); border-color: var(--muted);  color: var(--muted);  }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle {
+      position: relative;
+      width: 34px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 18px;
+      transition: background 0.2s;
+    }
+
+    .toggle-thumb {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      left: 3px;
+      top: 3px;
+      background: var(--muted);
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .toggle input:checked ~ .toggle-track { background: rgba(121,192,255,0.25); }
+    .toggle input:checked ~ .toggle-thumb { transform: translateX(16px); background: var(--blue); }
+
+    .toggle-text { font-size: 13px; color: var(--muted); }
+
+    /* ── Table ───────────────────────────────── */
+    .table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      overflow-x: auto;
+      margin-top: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead { border-bottom: 1px solid var(--border); }
+
+    th {
+      text-align: left;
+      padding: 11px 16px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 11px 16px;
+      border-bottom: 1px solid rgba(48,54,61,0.5);
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.018); }
+
+    .cell-mono {
+      font-family: var(--font-data);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .cell-muted { color: var(--muted); font-size: 13px; }
+
+    /* ── Badge ───────────────────────────────── */
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: var(--font-data);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .badge.fatal,
+    .badge.critico    { background: rgba(255,123,114,0.12); color: var(--red);    }
+    .badge.atencao    { background: rgba(255,166,87,0.12);  color: var(--orange); }
+    .badge.no_prazo   { background: rgba(121,192,255,0.12); color: var(--blue);   }
+    .badge.aguardando { background: rgba(139,148,158,0.12); color: var(--muted);  }
+
+    /* ── Vencimento cell ─────────────────────── */
+    .venc-date {
+      font-family: var(--font-data);
+      font-size: 13px;
+    }
+
+    .venc-date.fatal,
+    .venc-date.critico    { color: var(--red);    }
+    .venc-date.atencao    { color: var(--orange); }
+    .venc-date.no_prazo   { color: var(--blue);   }
+    .venc-date.aguardando { color: var(--muted);  }
+
+    .venc-delta {
+      font-family: var(--font-data);
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    /* ── Action button ───────────────────────── */
+    .btn-concluir {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-concluir:hover {
+      border-color: var(--green);
+      color: var(--green);
+      background: rgba(126,231,135,0.07);
+    }
+
+    .concluido-tag {
+      font-family: var(--font-data);
+      font-size: 10px;
+      color: var(--green);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ── Empty / Loading ─────────────────────── */
+    .state-cell {
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .state-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .state-desc {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ── Modal ───────────────────────────────── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(10px);
+      transition: transform 0.2s;
+    }
+
+    .overlay.open .modal { transform: translateY(0); }
+
+    .modal-hd {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title { font-size: 16px; font-weight: 600; }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+
+    .modal-close:hover { color: var(--text); }
+
+    .modal-body { padding: 20px 22px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .fg { display: flex; flex-direction: column; gap: 5px; }
+    .fg.span2 { grid-column: 1 / -1; }
+
+    .fg label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .fg input,
+    .fg select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 9px 11px;
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+
+    .fg input:focus,
+    .fg select:focus { border-color: var(--blue); }
+
+    .fg input::placeholder { color: var(--muted); }
+    .fg select option { background: var(--card); }
+
+    .modal-ft {
+      padding: 14px 22px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+
+    .btn-save {
+      background: var(--blue);
+      color: #0D1117;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-save:hover    { opacity: 0.82; }
+    .btn-save:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ── Toast ───────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 11px 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 2000;
+      max-width: 340px;
+      transform: translateY(12px);
+      opacity: 0;
+      transition: all 0.25s;
+      pointer-events: none;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.ok  { border-left: 3px solid var(--green); }
+    .toast.err { border-left: 3px solid var(--red);   }
+
+    /* ── Responsive ──────────────────────────── */
+    @media (max-width: 960px) {
+      .metrics { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .main    { padding: 14px; }
+      .header  { padding: 12px 14px; }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+
+      .form-grid { grid-template-columns: 1fr; }
+      .fg.span2  { grid-column: 1; }
+
+      th:nth-child(3), td:nth-child(3),
+      th:nth-child(4), td:nth-child(4) { display: none; }
+    }
+
+    /* ── Scrollbar ───────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ──────────────────────────────── -->
+  <header class="header">
+    <div>
+      <div class="brand-name">EQUILIBJUS Prazos</div>
+      <div class="brand-sub">gestao-de-prazos-processuais</div>
+    </div>
+    <button class="btn-primary" onclick="openModal()">+ Novo Prazo</button>
+  </header>
+
+  <!-- ── Main ────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Metrics -->
+    <div class="metrics">
+      <div class="metric-card" data-nivel="fatal" onclick="clickMetric('fatal')">
+        <div class="metric-label">Fatal</div>
+        <div class="metric-value" id="cnt-fatal">-</div>
+      </div>
+      <div class="metric-card" data-nivel="critico" onclick="clickMetric('critico')">
+        <div class="metric-label">Critico</div>
+        <div class="metric-value" id="cnt-critico">-</div>
+      </div>
+      <div class="metric-card" data-nivel="atencao" onclick="clickMetric('atencao')">
+        <div class="metric-label">Atencao</div>
+        <div class="metric-value" id="cnt-atencao">-</div>
+      </div>
+      <div class="metric-card" data-nivel="no_prazo" onclick="clickMetric('no_prazo')">
+        <div class="metric-label">No Prazo</div>
+        <div class="metric-value" id="cnt-no_prazo">-</div>
+      </div>
+      <div class="metric-card" data-nivel="aguardando" onclick="clickMetric('aguardando')">
+        <div class="metric-label">Aguardando</div>
+        <div class="metric-value" id="cnt-aguardando">-</div>
+      </div>
+    </div>
+
+    <!-- Toolbar linha 1 -->
+    <div class="toolbar">
+      <div class="search-box">
+        <input
+          class="input-field"
+          id="search"
+          type="text"
+          placeholder="Buscar por cliente ou numero do processo..."
+          oninput="onSearch()"
+        >
+      </div>
+      <div class="filter-group" id="fg-nivel">
+        <button class="fbtn on" data-v="todos"      onclick="setNivel('todos')">Todos</button>
+        <button class="fbtn"    data-v="fatal"      onclick="setNivel('fatal')">Fatal</button>
+        <button class="fbtn"    data-v="critico"    onclick="setNivel('critico')">Critico</button>
+        <button class="fbtn"    data-v="atencao"    onclick="setNivel('atencao')">Atencao</button>
+        <button class="fbtn"    data-v="no_prazo"   onclick="setNivel('no_prazo')">No Prazo</button>
+        <button class="fbtn"    data-v="aguardando" onclick="setNivel('aguardando')">Aguardando</button>
+      </div>
+    </div>
+
+    <!-- Toolbar linha 2 -->
+    <div class="toolbar">
+      <div class="filter-group" id="fg-adv">
+        <button class="fbtn on" data-v="todos"   onclick="setAdv('todos')">Todos</button>
+        <button class="fbtn"    data-v="Ricardo" onclick="setAdv('Ricardo')">Ricardo</button>
+        <button class="fbtn"    data-v="Athos"   onclick="setAdv('Athos')">Athos</button>
+        <button class="fbtn"    data-v="Romulo"  onclick="setAdv('Romulo')">Romulo</button>
+      </div>
+      <div style="flex:1"></div>
+      <label class="toggle-row" for="tog-conc">
+        <span class="toggle">
+          <input type="checkbox" id="tog-conc" onchange="onToggleConc()">
+          <span class="toggle-track"></span>
+          <span class="toggle-thumb"></span>
+        </span>
+        <span class="toggle-text">Mostrar concluidos</span>
+      </label>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Processo</th>
+            <th>Sistema</th>
+            <th>Instancia</th>
+            <th>Tipo</th>
+            <th>Vencimento</th>
+            <th>Responsavel</th>
+            <th>Urgencia</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="9"><div class="state-cell"><div class="state-desc">Carregando...</div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <!-- ── Modal ────────────────────────────────── -->
+  <div class="overlay" id="overlay" onclick="overlayClick(event)">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-hd">
+        <div class="modal-title" id="modal-title">Novo Prazo</div>
+        <button class="modal-close" onclick="closeModal()" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid" id="form-prazo">
+          <div class="fg span2">
+            <label for="f-cliente">Cliente</label>
+            <input type="text" id="f-cliente" placeholder="Nome do cliente">
+          </div>
+          <div class="fg span2">
+            <label for="f-processo">Numero do Processo</label>
+            <input type="text" id="f-processo" placeholder="0000000-00.0000.0.00.0000">
+          </div>
+          <div class="fg">
+            <label for="f-sistema">Sistema</label>
+            <select id="f-sistema">
+              <option value="">Selecionar</option>
+              <option>PJe</option>
+              <option>e-SAJ</option>
+              <option>PROJUDI</option>
+              <option>EPROC</option>
+              <option>CRETA</option>
+              <option>Themis</option>
+              <option>Outros</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label for="f-instancia">Instancia</label>
+            <select id="f-instancia">
+              <option value="">Selecionar</option>
+              <option>1 Instancia</option>
+              <option>2 Instancia</option>
+              <option>TJ / TRF</option>
+              <option>STJ</option>
+              <option>STF</option>
+              <option>TST</option>
+              <option>Arbitragem</option>
+              <option>Extrajudicial</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label for="f-tipo">Tipo de Prazo</label>
+            <select id="f-tipo">
+              <option value="">Selecionar</option>
+              <option>Recurso</option>
+              <option>Contestacao</option>
+              <option>Peticao</option>
+              <option>Manifestacao</option>
+              <option>Impugnacao</option>
+              <option>Replica</option>
+              <option>Memoriais</option>
+              <option>Sustentacao Oral</option>
+              <option>Acordo</option>
+              <option>Outros</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label for="f-vencimento">Vencimento</label>
+            <input type="date" id="f-vencimento">
+          </div>
+          <div class="fg">
+            <label for="f-login">Responsavel</label>
+            <select id="f-login">
+              <option value="">Selecionar</option>
+              <option value="Ricardo">Ricardo</option>
+              <option value="Athos">Athos</option>
+              <option value="Romulo">Romulo</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label for="f-nivel">Urgencia</label>
+            <select id="f-nivel">
+              <option value="">Automatico (por data)</option>
+              <option value="aguardando">Aguardando</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-ft">
+        <button class="btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn-save" id="btn-save" onclick="submitForm()">Salvar Prazo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toast ────────────────────────────────── -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <!-- ── Supabase SDK ──────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    'use strict';
+
+    // ============================================================
+    // CONFIGURACAO — edite as constantes abaixo conforme necessario
+    // ============================================================
+    const SUPABASE_URL      = 'https://nuelqfvnjacnbctodreg.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_rlgOc-_O890oEgzVjInQZg_ep4fmqbO';
+    // ============================================================
+
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ── Estado ───────────────────────────────────────────────────
+    let rows         = [];
+    let fNivel       = 'todos';
+    let fAdv         = 'todos';
+    let searchStr    = '';
+    let showConc     = false;
+
+    // ── Urgencia ─────────────────────────────────────────────────
+    function calcNivel(p) {
+      if (p.nivel === 'aguardando') return 'aguardando';
+      if (!p.vencimento)            return 'aguardando';
+
+      const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+      const venc = new Date(p.vencimento + 'T00:00:00');
+      const d    = Math.floor((venc - hoje) / 86400000);
+
+      if (d < 0)  return 'fatal';
+      if (d <= 2) return 'critico';
+      if (d <= 5) return 'atencao';
+      return 'no_prazo';
+    }
+
+    const NIVEL_LABEL = {
+      fatal: 'Fatal', critico: 'Critico', atencao: 'Atencao',
+      no_prazo: 'No Prazo', aguardando: 'Aguardando',
+    };
+
+    function deltaLabel(p) {
+      if (!p.vencimento || p.nivel === 'aguardando') return '';
+      const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+      const venc = new Date(p.vencimento + 'T00:00:00');
+      const d    = Math.floor((venc - hoje) / 86400000);
+      if (d < 0)  return Math.abs(d) + 'd atrasado';
+      if (d === 0) return 'hoje';
+      if (d === 1) return 'amanha';
+      return d + 'd restantes';
+    }
+
+    function fmtDate(iso) {
+      if (!iso) return '-';
+      const [y, m, d] = iso.split('-');
+      return d + '/' + m + '/' + y;
+    }
+
+    // ── Supabase — ler ───────────────────────────────────────────
+    async function loadRows() {
+      try {
+        let q = db.from('prazos').select('*').order('vencimento', { ascending: true, nullsFirst: false });
+        if (!showConc) q = q.or('concluido.is.null,concluido.eq.false');
+        const { data, error } = await q;
+        if (error) throw error;
+        rows = data || [];
+        render();
+      } catch (e) {
+        console.error(e);
+        toast('Erro ao carregar dados: ' + e.message, 'err');
+        document.getElementById('tbody').innerHTML =
+          `<tr><td colspan="9"><div class="state-cell">
+             <div class="state-title">Erro de conexao</div>
+             <div class="state-desc">${esc(e.message)}</div>
+           </div></td></tr>`;
+      }
+    }
+
+    // ── Supabase — inserir ───────────────────────────────────────
+    async function insertRow(payload) {
+      const { error } = await db.from('prazos').insert([payload]);
+      if (error) throw error;
+    }
+
+    // ── Supabase — concluir ──────────────────────────────────────
+    async function markDone(id) {
+      const { error } = await db.from('prazos').update({ concluido: true }).eq('id', id);
+      if (error) throw error;
+    }
+
+    // ── Filtro ───────────────────────────────────────────────────
+    function filtered() {
+      return rows.filter(p => {
+        const n = calcNivel(p);
+        if (fNivel !== 'todos' && n !== fNivel) return false;
+        if (fAdv   !== 'todos' && (p.login || '').toLowerCase() !== fAdv.toLowerCase()) return false;
+        if (searchStr) {
+          const t = searchStr.toLowerCase();
+          if (!(p.cliente || '').toLowerCase().includes(t) &&
+              !(p.processo || '').toLowerCase().includes(t)) return false;
+        }
+        return true;
+      });
+    }
+
+    // ── Render metricas ──────────────────────────────────────────
+    function renderMetrics() {
+      const base   = rows.filter(p => !p.concluido);
+      const counts = { fatal:0, critico:0, atencao:0, no_prazo:0, aguardando:0 };
+      base.forEach(p => { const n = calcNivel(p); if (n in counts) counts[n]++; });
+      for (const [k, v] of Object.entries(counts)) {
+        const el = document.getElementById('cnt-' + k);
+        if (el) el.textContent = v;
+      }
+    }
+
+    // ── Render tabela ────────────────────────────────────────────
+    function renderTable() {
+      const data  = filtered();
+      const tbody = document.getElementById('tbody');
+
+      if (!data.length) {
+        tbody.innerHTML =
+          `<tr><td colspan="9"><div class="state-cell">
+             <div class="state-title">Nenhum prazo encontrado</div>
+             <div class="state-desc">Ajuste os filtros ou adicione um novo prazo.</div>
+           </div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map(p => {
+        const n     = calcNivel(p);
+        const delta = deltaLabel(p);
+        const done  = !!p.concluido;
+        return `<tr>
+          <td>${esc(p.cliente || '-')}</td>
+          <td class="cell-mono">${esc(p.processo || '-')}</td>
+          <td class="cell-muted">${esc(p.sistema || '-')}</td>
+          <td class="cell-muted">${esc(p.instancia || '-')}</td>
+          <td class="cell-muted">${esc(p.tipo || '-')}</td>
+          <td>
+            <div class="venc-date ${n}">${fmtDate(p.vencimento)}</div>
+            ${delta ? `<div class="venc-delta">${delta}</div>` : ''}
+          </td>
+          <td class="cell-muted">${esc(p.login || '-')}</td>
+          <td><span class="badge ${n}">${NIVEL_LABEL[n] || n}</span></td>
+          <td>
+            ${done
+              ? '<span class="concluido-tag">Concluido</span>'
+              : `<button class="btn-concluir" onclick="handleConcluir('${esc(p.id)}')">Concluir</button>`
+            }
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function render() {
+      renderMetrics();
+      renderTable();
+    }
+
+    // ── Handlers filtro ──────────────────────────────────────────
+    function setNivel(v) {
+      fNivel = v;
+      document.querySelectorAll('#fg-nivel .fbtn').forEach(b =>
+        b.classList.toggle('on', b.dataset.v === v));
+      document.querySelectorAll('.metric-card').forEach(c =>
+        c.classList.toggle('selected', c.dataset.nivel === v));
+      renderTable();
+    }
+
+    function setAdv(v) {
+      fAdv = v;
+      document.querySelectorAll('#fg-adv .fbtn').forEach(b =>
+        b.classList.toggle('on', b.dataset.v === v));
+      renderTable();
+    }
+
+    function clickMetric(nivel) {
+      setNivel(fNivel === nivel ? 'todos' : nivel);
+    }
+
+    function onSearch() {
+      searchStr = document.getElementById('search').value;
+      renderTable();
+    }
+
+    async function onToggleConc() {
+      showConc = document.getElementById('tog-conc').checked;
+      await loadRows();
+    }
+
+    async function handleConcluir(id) {
+      try {
+        await markDone(id);
+        toast('Prazo marcado como concluido.', 'ok');
+        await loadRows();
+      } catch (e) {
+        toast('Erro ao concluir prazo: ' + e.message, 'err');
+      }
+    }
+
+    // ── Modal ────────────────────────────────────────────────────
+    function openModal() {
+      document.getElementById('overlay').classList.add('open');
+      document.getElementById('f-cliente').focus();
+    }
+
+    function closeModal() {
+      document.getElementById('overlay').classList.remove('open');
+      ['f-cliente','f-processo','f-vencimento'].forEach(id =>
+        (document.getElementById(id).value = ''));
+      ['f-sistema','f-instancia','f-tipo','f-login','f-nivel'].forEach(id =>
+        (document.getElementById(id).selectedIndex = 0));
+    }
+
+    function overlayClick(e) {
+      if (e.target === document.getElementById('overlay')) closeModal();
+    }
+
+    async function submitForm() {
+      const cliente  = document.getElementById('f-cliente').value.trim();
+      const processo = document.getElementById('f-processo').value.trim();
+
+      if (!cliente || !processo) {
+        toast('Cliente e numero do processo sao obrigatorios.', 'err');
+        return;
+      }
+
+      const btn = document.getElementById('btn-save');
+      btn.disabled    = true;
+      btn.textContent = 'Salvando...';
+
+      try {
+        await insertRow({
+          cliente,
+          processo,
+          sistema:    document.getElementById('f-sistema').value   || null,
+          instancia:  document.getElementById('f-instancia').value || null,
+          tipo:       document.getElementById('f-tipo').value      || null,
+          vencimento: document.getElementById('f-vencimento').value || null,
+          login:      document.getElementById('f-login').value     || null,
+          nivel:      document.getElementById('f-nivel').value     || null,
+          concluido:  false,
+        });
+        toast('Prazo salvo com sucesso.', 'ok');
+        closeModal();
+        await loadRows();
+      } catch (e) {
+        toast('Erro ao salvar prazo: ' + e.message, 'err');
+      } finally {
+        btn.disabled    = false;
+        btn.textContent = 'Salvar Prazo';
+      }
+    }
+
+    // ── Toast ────────────────────────────────────────────────────
+    let _toastTimer;
+    function toast(msg, type = 'ok') {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className   = 'toast ' + type + ' show';
+      clearTimeout(_toastTimer);
+      _toastTimer = setTimeout(() => { el.className = 'toast'; }, 3200);
+    }
+
+    // ── Util ─────────────────────────────────────────────────────
+    function esc(s) {
+      return String(s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Keyboard ─────────────────────────────────────────────────
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // ── Boot ─────────────────────────────────────────────────────
+    loadRows();
+  </script>
+</body>
+</html>
