@@ -1030,17 +1030,30 @@ function renderResultado(){
   const dups=iaExtracted.filter(p=>p._dup).length;
   document.getElementById('ia-resumo').textContent=`${iaExtracted.length} extraído(s) · ${dups} já existe(m) — desmarcados por padrão`;
 }
-function importarTodos(){
+async function importarTodos(){
   const toImport=iaExtracted.filter((_,i)=>iaImportCheck[i]);
   if(!toImport.length)return setIAStatus('Nenhum selecionado.','red');
+  setIAStatus('Salvando no Supabase...','');
   let imp=0,atl=0;
   for(const p of toImport){
-    const num=p.numero||p.number;const existe=processes.find(x=>x.number===num&&!x.encerrado);
-    if(existe){existe.dueDate=p.dueDate||p.prazo_final||existe.dueDate;existe.status=p.status||existe.status;existe.notes=(existe.notes?existe.notes+' | ':'')+'[IA '+new Date().toLocaleDateString('pt-BR')+']: '+(p.notes||'');if(p.logins?.length)existe.logins=[...new Set([...existe.logins,...p.logins])];atl++;}
-    else{const newId=Math.max(...processes.map(x=>x.id),0)+1;processes.push({id:newId,number:num||'',party:p.parte||p.party||'',subject:p.assunto||p.subject||'',logins:p.logins||['Ricardo'],system:p.sistema||p.system||'',actType:p.actType||'Responder',dueDate:p.dueDate||p.prazo_final||null,status:p.status||'em dia',client:p.client||p.cliente||'',paymentStatus:p.paymentStatus||'não aplicável',notes:p.notes||p.obs||'',encerrado:false});imp++;}
+    const num=p.numero||p.number;
+    const existe=processes.find(x=>x.number===num&&!x.encerrado);
+    const obj={number:num||'',party:p.parte||p.party||'',subject:p.assunto||p.subject||'',logins:p.logins||['Ricardo'],system:p.sistema||p.system||'',actType:p.actType||'Responder',dueDate:p.dueDate||p.prazo_final||null,status:p.status||'em dia',client:p.client||p.cliente||'',paymentStatus:p.paymentStatus||'não aplicável',notes:p.notes||p.obs||'',encerrado:false};
+    if(existe){
+      existe.dueDate=obj.dueDate||existe.dueDate;existe.status=obj.status||existe.status;
+      existe.notes=(existe.notes?existe.notes+' | ':'')+'[IA '+new Date().toLocaleDateString('pt-BR')+']: '+(p.notes||'');
+      if(p.logins?.length)existe.logins=[...new Set([...existe.logins,...p.logins])];
+      await sbSaveProc(existe);atl++;
+    }else{
+      await sbSaveProc(obj);processes.push(obj);imp++;
+    }
   }
-  for(const p of processes.slice(-imp))sbSaveProc(p);document.getElementById('ia-resultado').style.display='none';iaExtracted=[];
-  setIAStatus(`✓ ${imp} importado(s), ${atl} atualizado(s).`,'green');renderHistorico();renderDashboard();setTimeout(()=>setIAStatus(''),4000);
+  document.getElementById('ia-resultado').style.display='none';iaExtracted=[];
+  setIAStatus(`✓ ${imp} importado(s), ${atl} atualizado(s).`,'green');
+  renderHistorico();
+  await sbLoadProcesses();
+  renderDashboard();
+  setTimeout(()=>setIAStatus(''),4000);
 }
 function limparResultado(){document.getElementById('ia-resultado').style.display='none';iaExtracted=[];}
 function limparIA(){iaFiles=[];iaExtracted=[];renderFilesList();document.getElementById('ia-btn-analisar').style.display='none';document.getElementById('ia-btn-limpar').style.display='none';document.getElementById('ia-resultado').style.display='none';setIAStatus('');}
