@@ -575,7 +575,7 @@ function renderDashboard(){
   const urgent=[...critical,...attn].sort((a,b)=>(daysUntil(a.dueDate)??999)-(daysUntil(b.dueDate)??999)).slice(0,8);
   document.getElementById('urgent-list').innerHTML=urgent.length?urgent.map(p=>{
     const days=daysUntil(p.dueDate);const bc=barColor(days,p.status);const pct=p.status==='vencido'||days<0?100:days<=5?88:days<=15?55:20;
-    return`<div class="proc-item" onclick="openModal(${p.id})">${statusBadge(p.status,p.encerrado)}<div class="proc-info"><div class="proc-num">${p.number}</div><div class="proc-party">${p.party}</div><div class="proc-sub">${p.subject} · ${p.system}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${bc}"></div></div></div><div class="proc-meta"><div class="proc-date">${fmtDate(p.dueDate)}</div><div class="proc-days ${daysClass(days,p.status)}">${days===null?'—':p.status==='vencido'?'VENC':days===0?'HOJE':days+'d'}</div></div></div>`;
+    return`<div class="proc-item" onclick="openModal('${p.id}')">${statusBadge(p.status,p.encerrado)}<div class="proc-info"><div class="proc-num">${p.number}</div><div class="proc-party">${p.party}</div><div class="proc-sub">${p.subject} · ${p.system}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${bc}"></div></div></div><div class="proc-meta"><div class="proc-date">${fmtDate(p.dueDate)}</div><div class="proc-days ${daysClass(days,p.status)}">${days===null?'—':p.status==='vencido'?'VENC':days===0?'HOJE':days+'d'}</div></div></div>`;
   }).join(''):'<div class="empty">FILA LIMPA</div>';
   document.getElementById('task-preview').innerHTML=pend.length?pend.slice(0,6).map(t=>{
     const pc=t.priority==='Alta'?'task-badge-alta':t.priority==='Média'?'task-badge-media':'task-badge-baixa';
@@ -606,7 +606,7 @@ function renderProcessos(){
   filtered.sort((a,b)=>(ord[a.status]||9)-(ord[b.status]||9)||(daysUntil(a.dueDate)??999)-(daysUntil(b.dueDate)??999));
   document.getElementById('proc-tbody').innerHTML=filtered.length?filtered.map(p=>{
     const days=daysUntil(p.dueDate);const isExp=expandedProc===p.id;
-    return`<tr class="${p.encerrado?'enc':''}" onclick="expandProc(${p.id})">
+    return`<tr class="${p.encerrado?'enc':''}" onclick="expandProc('${p.id}')">
       <td>${statusBadge(p.status,p.encerrado)}</td>
       <td><span class="proc-num">${p.number}</span></td>
       <td><div style="font-size:12px;font-weight:600;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.party}</div><div style="font-size:10px;color:#555568;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px">${p.subject}</div></td>
@@ -620,9 +620,9 @@ function renderProcessos(){
       <div class="exp-field"><label>Pagamento</label><p>${p.paymentStatus||'—'}</p></div>
       <div class="exp-field" style="flex:1"><label>Obs</label><p style="color:#888899">${p.notes||'—'}</p></div>
       <div class="exp-actions">
-        <button class="btn-primary" onclick="event.stopPropagation();openModal(${p.id})">Editar</button>
-        ${p.encerrado?`<button class="btn-outline" onclick="event.stopPropagation();reativarProc(${p.id})">Reativar</button>`:`<button class="btn-success" onclick="event.stopPropagation();encerrarProc(${p.id})">Encerrar</button>`}
-        <button class="btn-danger" onclick="event.stopPropagation();deletarProc(${p.id})">Excluir</button>
+        <button class="btn-primary" onclick="event.stopPropagation();openModal('${p.id}')">Editar</button>
+        ${p.encerrado?`<button class="btn-outline" onclick="event.stopPropagation();reativarProc('${p.id}')">Reativar</button>`:`<button class="btn-success" onclick="event.stopPropagation();encerrarProc('${p.id}')">Encerrar</button>`}
+        <button class="btn-danger" onclick="event.stopPropagation();deletarProc('${p.id}')">Excluir</button>
       </div></div></td></tr>`:''}`;
   }).join(''):'<tr><td colspan="7"><div class="empty">NENHUM PROCESSO</div></td></tr>';
 }
@@ -660,8 +660,8 @@ function renderModalBody(p){
     </div>
     <div class="modal-field"><label>Observações</label><div class="modal-notes-box">${p.notes||'—'}</div></div>
     <div class="modal-actions">
-      <button class="btn-outline" onclick="switchToEdit(${p.id})">Editar</button>
-      ${p.encerrado?`<button class="btn-outline" onclick="reativarProc(${p.id});closeModalDirect()">Reativar</button>`:`<button class="btn-success" onclick="encerrarProc(${p.id});closeModalDirect()">Encerrar</button>`}
+      <button class="btn-outline" onclick="switchToEdit('${p.id}')">Editar</button>
+      ${p.encerrado?`<button class="btn-outline" onclick="reativarProc('${p.id}');closeModalDirect()">Reativar</button>`:`<button class="btn-success" onclick="encerrarProc('${p.id}');closeModalDirect()">Encerrar</button>`}
       <button class="btn-primary" onclick="closeModalDirect()">Fechar</button>
     </div>`;
 }
@@ -679,7 +679,7 @@ function switchToEdit(id){
       <div class="modal-field"><label>Pagamento</label><select id="ep-pay">${['pago','pendente','parcial','não aplicável'].map(s=>`<option value="${s}"${p.paymentStatus===s?' selected':''}>${s}</option>`).join('')}</select></div>
     </div>
     <div class="modal-field"><label>Observações</label><textarea id="ep-notes" rows="3" style="width:100%;resize:none">${p.notes||''}</textarea></div>
-    <div class="modal-actions"><button class="btn-cancel" onclick="openModal(${id})">Cancelar</button><button class="btn-save" onclick="saveEditProc(${id})">Salvar</button></div>`;
+    <div class="modal-actions"><button class="btn-cancel" onclick="openModal(${id})">Cancelar</button><button class="btn-save" onclick="saveEditProc('${id}')">Salvar</button></div>`;
 }
 function saveEditProc(id){
   const p=processes.find(x=>x.id===id);if(!p)return;
@@ -711,7 +711,7 @@ function renderTarefas(){
       <div class="task-title" style="margin-top:3px;${done?'text-decoration:line-through;color:var(--faint)':''}">${t.title}</div>
       <div class="task-meta">Prazo: ${fmtDate(t.dueDate)}${t.notes?' · '+t.notes:''}</div></div>
       <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">
-        <button class="btn-outline" style="padding:4px 8px;font-size:9px" onclick="openTaskModal(${t.id})">Editar</button>
+        <button class="btn-outline" style="padding:4px 8px;font-size:9px" onclick="openTaskModal('${t.id}')">Editar</button>
         <button class="btn-danger" style="padding:4px 8px;font-size:9px" onclick="deletarTask(${t.id})">Excluir</button>
       </div></div>`;
   }).join(''):'<div class="empty">NENHUMA TAREFA</div>';
@@ -730,7 +730,7 @@ function openTaskModal(id){
       <div class="modal-field"><label>Status</label><select id="et-status">${['pendente','em andamento','concluído'].map(s=>`<option value="${s}"${t.status===s?' selected':''}>${s}</option>`).join('')}</select></div>
     </div>
     <div class="modal-field"><label>Notas</label><textarea id="et-notes" rows="3" style="width:100%;resize:none">${t.notes||''}</textarea></div>
-    <div class="modal-actions"><button class="btn-cancel" onclick="closeTaskModal()">Cancelar</button><button class="btn-save" onclick="saveEditTask(${id})">Salvar</button></div>`;
+    <div class="modal-actions"><button class="btn-cancel" onclick="closeTaskModal()">Cancelar</button><button class="btn-save" onclick="saveEditTask('${id}')">Salvar</button></div>`;
   document.getElementById('task-modal-overlay').classList.add('open');
 }
 function saveEditTask(id){
@@ -800,7 +800,7 @@ function calDayClick(dk){
   document.getElementById('cal-detail-title').textContent=`${d}/${m}/${y} · ${procs.length} PROCESSO(S)`;
   document.getElementById('cal-detail-list').innerHTML=procs.map(p=>{
     const days=daysUntil(p.dueDate);
-    return`<div class="proc-item" onclick="openModal(${p.id})">${statusBadge(p.status,p.encerrado)}<div class="proc-info"><div class="proc-num">${p.number}</div><div class="proc-party">${p.party}</div><div class="proc-sub">${p.subject}</div></div><div class="proc-days ${daysClass(days,p.status)}">${days===null?'—':p.status==='vencido'?'VENCIDO':days===0?'HOJE':days+'d'}</div></div>`;
+    return`<div class="proc-item" onclick="openModal('${p.id}')">${statusBadge(p.status,p.encerrado)}<div class="proc-info"><div class="proc-num">${p.number}</div><div class="proc-party">${p.party}</div><div class="proc-sub">${p.subject}</div></div><div class="proc-days ${daysClass(days,p.status)}">${days===null?'—':p.status==='vencido'?'VENCIDO':days===0?'HOJE':days+'d'}</div></div>`;
   }).join('');
   document.getElementById('cal-detail').style.display='block';
 }
@@ -827,7 +827,7 @@ function renderPlanning(){
     if(!procs.length){el.innerHTML='<div class="empty">NENHUM</div>';return;}
     el.innerHTML=[...procs].sort((a,b)=>(daysUntil(a.dueDate)??999)-(daysUntil(b.dueDate)??999)).map(p=>{
       const days=daysUntil(p.dueDate);
-      return`<div class="planning-item" onclick="openModal(${p.id})"><div class="planning-day-label">${showDate?fmtDate(p.dueDate):''}</div><div style="flex:1;min-width:0">${statusBadge(p.status,p.encerrado)}<div class="proc-party" style="margin-top:2px">${p.party}</div><div class="proc-sub">${p.subject}</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--faint);margin-top:1px">${p.system} · ${p.logins.join(', ')}</div></div><div class="proc-days ${daysClass(days,p.status)}" style="font-family:var(--font-mono);font-size:13px;font-weight:700;flex-shrink:0">${days===null?'—':p.status==='vencido'?'VENC':days===0?'HOJE':days+'d'}</div></div>`;
+      return`<div class="planning-item" onclick="openModal('${p.id}')"><div class="planning-day-label">${showDate?fmtDate(p.dueDate):''}</div><div style="flex:1;min-width:0">${statusBadge(p.status,p.encerrado)}<div class="proc-party" style="margin-top:2px">${p.party}</div><div class="proc-sub">${p.subject}</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--faint);margin-top:1px">${p.system} · ${p.logins.join(', ')}</div></div><div class="proc-days ${daysClass(days,p.status)}" style="font-family:var(--font-mono);font-size:13px;font-weight:700;flex-shrink:0">${days===null?'—':p.status==='vencido'?'VENC':days===0?'HOJE':days+'d'}</div></div>`;
     }).join('');
   }
   renderSec(document.getElementById('planning-hoje'),[...venc,...pHoje]);
