@@ -477,16 +477,26 @@ let agentMessages=[];
 function save(){/* dados persistidos no Supabase — ver funções sbSaveProc/sbSaveTask */}
 function getApiKey(){return localStorage.getItem(AK_KEY)||'';}
 async function sbLoadProcesses(){
-  try{const r=await fetch(SUPABASE_URL+'/rest/v1/processos?order=duedate.asc.nullslast&concluido=eq.false',{headers:SB_HDR});
-  if(r.ok){const d=await r.json();if(d.length){processes=d.map(p=>({id:p.id,number:p.numero,party:p.parte,subject:p.assunto,logins:p.logins||['Ricardo'],system:p.sistema,actType:p.actType||'Responder',dueDate:p.duedate,status:p.status,client:p.client||'',paymentStatus:p.paymentStatus||'não aplicável',notes:p.notes||'',encerrado:p.concluido||false}));}}}catch(e){console.warn('Supabase offline, usando dados locais');}
+  try{
+    const r=await fetch(SUPABASE_URL+'/rest/v1/processos?order=duedate.asc.nullslast',{headers:SB_HDR});
+    if(r.ok){
+      const d=await r.json();
+      processes=d.map(p=>({id:p.id,number:p.numero,party:p.parte,subject:p.assunto,logins:p.logins||['Ricardo'],system:p.sistema,actType:p.acttype||'Responder',dueDate:p.duedate,status:p.status,client:p.client||'',paymentStatus:p.paymentstatus||'não aplicável',notes:p.notes||'',encerrado:p.concluido||false}));
+    }
+  }catch(e){console.warn('Supabase offline:',e);}
   renderDashboard();
 }
 async function sbLoadTasks(){
-  try{const r=await fetch(SUPABASE_URL+'/rest/v1/tarefas?order=duedate.asc',{headers:SB_HDR});
-  if(r.ok){const d=await r.json();if(d.length){tasks=d.map(t=>({id:t.id,title:t.titulo,responsible:t.responsavel,priority:t.prioridade,dueDate:t.duedate,status:t.status,notes:t.notes||''}));}}}catch(e){console.warn('Supabase tarefas offline');}
+  try{
+    const r=await fetch(SUPABASE_URL+'/rest/v1/tarefas?order=duedate.asc',{headers:SB_HDR});
+    if(r.ok){
+      const d=await r.json();
+      tasks=d.map(t=>({id:t.id,title:t.titulo,responsible:t.responsavel,priority:t.prioridade,dueDate:t.duedate,status:t.status,notes:t.notes||''}));
+    }
+  }catch(e){console.warn('Supabase tarefas offline:',e);}
 }
 async function sbSaveProc(p){
-  const body={numero:p.number,parte:p.party,assunto:p.subject,logins:p.logins,sistema:p.system,actType:p.actType,duedate:p.dueDate||null,status:p.status,client:p.client,paymentStatus:p.paymentStatus,notes:p.notes,concluido:p.encerrado};
+  const body={numero:p.number,parte:p.party,assunto:p.subject,logins:p.logins,sistema:p.system,acttype:p.actType,duedate:p.dueDate||null,status:p.status,client:p.client,paymentstatus:p.paymentStatus,notes:p.notes,concluido:p.encerrado};
   if(typeof p.id==='string'&&p.id.length>10){await fetch(SUPABASE_URL+'/rest/v1/processos?id=eq.'+p.id,{method:'PATCH',headers:SB_HDR,body:JSON.stringify(body)});}
   else{const r=await fetch(SUPABASE_URL+'/rest/v1/processos',{method:'POST',headers:SB_HDR,body:JSON.stringify(body)});if(r.ok){const d=await r.json();p.id=d[0]?.id||p.id;}}
 }
